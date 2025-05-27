@@ -1,0 +1,5 @@
+confluent-kafka==2.10.0
+fastavro==1.10.0
+PyYAML==6.0.2
+-e git+https://github.com/Vinay-kanuku/smart-utility-anomaly-detector.git@7be5e21380a50b3eb13b9a62cb5c16ae917e2e2a#egg=utils
+uv==0.7.3

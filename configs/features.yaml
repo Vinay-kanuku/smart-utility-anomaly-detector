@@ -1,0 +1,13 @@
+features:
+  - name: transaction_velocity
+    description: Number of transactions per user in a 1-minute window
+    type: integer
+    ttl: 3600
+  - name: amount_deviation
+    description: Deviation of transaction amount from user's average in last hour
+    type: float
+    ttl: 3600
+  - name: geolocation_shift
+    description: Distance between consecutive transaction locations (km)
+    type: float
+    ttl: 3600

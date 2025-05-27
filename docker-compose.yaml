@@ -1,0 +1,50 @@
+services:
+  # Init container to set up the volume permissions
+  init-volume:
+    image: busybox
+    volumes:
+      - kafka-data:/data
+    command: sh -c "chmod -R 777 /data && echo 'Permissions set up successfully'"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    hostname: kafka
+    depends_on:
+      - init-volume
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      # Add the missing configuration
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+    ports:
+      - "29092:29092"
+    volumes:
+      - kafka-data:/tmp/kraft-combined-logs
+      - ./kraft-server.properties:/etc/kafka/kraft/server.properties
+    networks:
+      - kafka-net
+    user: "1000:1000"
+    command: >
+      bash -c "
+      if [ ! -f /tmp/kraft-combined-logs/meta.properties ]; then
+        kafka-storage format --cluster-id $$CLUSTER_ID --config /etc/kafka/kraft/server.properties;
+      fi &&
+      /etc/confluent/docker/run
+      "
+volumes:
+  kafka-data:
+networks:
+  kafka-net:
+    driver: bridge

@@ -1,0 +1,49 @@
+app:
+  name: transaction-stream-producer
+  environment: development   # or staging / production
+  log_level: INFO
+  metrics_enabled: true
+  health_check_port: 8081
+
+kafka:
+  bootstrap_servers:
+    - localhost:9092
+  topic: transactions
+  client_id: txn_producer_1
+  acks: all
+  compression_type: snappy
+  batch_size: 32768           # bytes
+  linger_ms: 20
+  retries: 5
+  enable_idempotence: true
+  schema_registry_url: http://localhost:8081
+
+avro:
+  schema_path: schemas/transaction.avsc
+  subject_name: transaction-event-value
+  compatibility: BACKWARD
+
+generation:
+  events_per_second: 500       # adjust as needed
+  burst_mode: false
+  simulate_fraud: true
+  fraud_rate: 0.03             # 3% fraudulent
+  user_profiles:
+    low_risk: 0.7
+    medium_risk: 0.2
+    high_risk: 0.1
+  geo_enabled: true
+  event_spikes:
+    enable: true
+    spike_type: holiday
+    spike_amplitude: 2.5       # 2.5x normal load
+
+security:
+  ssl_enabled: false
+  auth_enabled: false
+  audit_logging: true
+
+monitoring:
+  prometheus_enabled: true
+  expose_metrics: true
+  log_metrics_interval_sec: 30

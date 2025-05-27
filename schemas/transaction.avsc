@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "name": "Transaction",
+  "namespace": "flashguard",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "user_id", "type": "string"},
+    {"name": "amount", "type": "float"},
+    {"name": "timestamp", "type": "string"},
+    {"name": "merchant", "type": "string"},
+    {"name": "card_number", "type": "string"},
+    {
+      "name": "location",
+      "type": {
+        "type": "record",
+        "name": "Location",
+        "fields": [
+          {"name": "lat", "type": "float"},
+          {"name": "lon", "type": "float"},
+          {"name": "country", "type": "string"}
+        ]
+      }
+    },
+    {"name": "device_id", "type": "string"},
+    {"name": "is_fraud", "type": "boolean"},
+    {"name": "fraud_type", "type": ["null", "string"], "default": null},
+    {"name": "status", "type": ["null", "string"], "default": null}
+  ]
+}
