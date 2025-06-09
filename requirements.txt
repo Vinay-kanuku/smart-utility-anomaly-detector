@@ -1,0 +1,9 @@
+avro-python3==1.10.2
+confluent-kafka==2.10.0
+Faker==37.3.0
+fastavro==1.10.0
+PyYAML==6.0.2
+redis==6.1.0
+tzdata==2025.2
+-e git+https://github.com/Vinay-kanuku/smart-utility-anomaly-detector.git@13c889135828dcfea00cb5925f806d5d363c5e7b#egg=utils
+uv==0.7.3
